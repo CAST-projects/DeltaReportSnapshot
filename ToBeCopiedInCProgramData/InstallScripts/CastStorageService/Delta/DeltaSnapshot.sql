@@ -11,28 +11,33 @@ Begin
   into L_ID
   from DELTA_REPORT;
 
-  select object_id into L_APP_ID from dss_objects where object_type_id = -102 and object_name = 'p_app_name';
+  select object_id into L_APP_ID from dss_objects where object_type_id = -102 and object_name = p_app_name;
+  
   if  L_APP_ID > 0 then
     select COALESCE(max(snapshot_id),0) into L_SNAPSHOT_ID2 from dss_snapshots where application_id=L_APP_ID;
     if  L_SNAPSHOT_ID2 > 0 then
-      select COALESCE(max(snapshot_id),0) into L_SNAPSHOT_ID1 from dss_snapshots where application_id=L_APP_ID and snaspshot_id < L_SNAPSHOT_ID2;
+      select COALESCE(max(snapshot_id),0) into L_SNAPSHOT_ID1 from dss_snapshots where application_id=L_APP_ID and snapshot_id < L_SNAPSHOT_ID2;
       if  L_SNAPSHOT_ID1 > 0 then
   
         insert into DELTA_REPORT (ID,TAG)
         select L_ID
           , (select 'Check snapshots ' || L_SNAPSHOT_ID1 || ' and ' || L_SNAPSHOT_ID2 || ' of "' || p_app_name || '" in ' || pv.version || ' at ' || current_timestamp(0) from sys_package_version pv where package_name = 'ADG_CENTRAL');
     
-        perform delta_snapshot_report_data(L_ID,'B',L_SNAPSHOT_ID1,p_app_name);
-        perform delta_snapshot_report_data(L_ID,'A',L_SNAPSHOT_ID2,p_app_name);
+        perform delta_snapshot_report_data(L_ID,'B',L_SNAPSHOT_ID1,L_APP_ID);
+        perform delta_snapshot_report_data(L_ID,'A',L_SNAPSHOT_ID2,L_APP_ID);
         perform delta_snapshot_report_diff(L_ID);
       end if;
     end if;
+  else
+    insert into DELTA_REPORT (ID,TAG)
+    select L_ID
+      , (select 'Check snapshots: application "' || p_app_name || '" does not exist. Failed at ' || current_timestamp(0) from sys_package_version pv where package_name = 'ADG_CENTRAL');
   end if;
 End;
 $body$ 
 LANGUAGE plpgsql;
 
-create or replace FUNCTION delta_snapshot_report_data (p_id integer, p_delta_type character varying, p_snapshot_id integer, p_app_id integer, p_app_name character varying)
+create or replace FUNCTION delta_snapshot_report_data (p_id integer, p_delta_type character varying, p_snapshot_id integer, p_app_id integer)
 RETURNS void as
 $body$
 declare
@@ -53,7 +58,7 @@ Begin
 
   truncate table DELTA_WK_TCRIT;
   
-  insert into DELTA_WK_TCRIT (BCRIT_ID,VALUE)
+  insert into DELTA_WK_TCRIT (TCRIT_ID,VALUE)
   select CRITERION_ID,CRITERION_GRADE
   from CSV_TCRIT_VALUES
   where SNAPSHOT_ID = p_snapshot_id
@@ -85,9 +90,9 @@ Begin
   
 
   insert into DELTA_QR (ID,TYPE,QR_ID,QR_NAME,VALUE,DETAIL,TOTAL)
-  select p_id,p_delta_type,o.QR_ID,t.QR_NAME,o.VALUE,o.DETAIL,o.TOTAL --,DMTT.METRIC_CRITICAL CRITICAL
+  select p_id,p_delta_type,o.QR_ID,t.METRIC_NAME,o.VALUE,o.DETAIL,o.TOTAL --,DMTT.METRIC_CRITICAL CRITICAL
   from DELTA_WK_QR o
-    join DSS_METRIC_TYPES t on (t.metric_id = o.TCRIT_ID)
+    join DSS_METRIC_TYPES t on (t.metric_id = o.QR_ID)
     --JOIN DSS_METRIC_TYPE_TREES DMTT ON (CQT.METRIC_ID = DMTT.METRIC_ID)
     ;
 

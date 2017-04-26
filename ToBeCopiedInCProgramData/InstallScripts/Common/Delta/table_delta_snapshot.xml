@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="DELTA_SNAPSHOT" version="1.0.0">
+	<table name="DELTA_REPORT" description="Delta report history">
+		<column name="ID" type="int" nullable="false" description="Execution id"/>
+		<column name="TAG" type="string" nullable="false" length="100" description="Execution tag"/>
+		<index name="DELTA_REPORT_PK" type="primary key">
+			<column name="ID"/>
+		</index>
+	</table>
+	<table name="DELTA_WK_BCRIT" description="Grade for business criteria for each execution">
+		<column name="BCRIT_ID" type="int" nullable="false" description="Business criteria"/>
+		<column name="VALUE" type="num" nullable="false" precision="126" default="0" description="Grade"/>
+		<index name="DELTA_WK_BCRIT_PK" type="primary key">
+			<column name="BCRIT_ID"/>
+		</index>
+	</table>
+	<table name="DELTA_BCRIT" description="Grade for business criteria for each execution">
+		<column name="ID" type="int" nullable="false" description="Execution id"/>
+		<column name="TYPE" type="string" nullable="false" length="1" description="Delta type"/>
+		<column name="BCRIT_ID" type="int" nullable="false" description="Business criteria"/>
+		<column name="BCRIT_NAME" type="string" nullable="false" length="255" description="Business criteria name"/>
+		<column name="VALUE" type="num" nullable="false" precision="126" default="0" description="Grade"/>
+		<index name="DELTA_BCRIT_PK" type="index">
+			<column name="ID,TYPE"/>
+		</index>
+		<index name="DELTA_BCRIT_IDX" type="index">
+			<column name="BCRIT_ID"/>
+		</index>
+	</table>
+	<table name="DELTA_WK_TCRIT" description="Grade for technical criteria for each execution">
+		<column name="TCRIT_ID" type="int" nullable="false" description="Technical criteria"/>
+		<column name="VALUE" type="num" nullable="false" precision="126" default="0" description="Grade"/>
+		<index name="DELTA_WK_TCRIT_PK" type="primary key">
+			<column name="TCRIT_ID"/>
+		</index>
+	</table>
+	<table name="DELTA_TCRIT" description="Grade for technical criteria for each execution">
+		<column name="ID" type="int" nullable="false" description="Execution id"/>
+		<column name="TYPE" type="string" nullable="false" length="1" description="Delta type"/>
+		<column name="TCRIT_ID" type="int" nullable="false" description="Technical criteria"/>
+		<column name="TCRIT_NAME" type="string" nullable="false" length="255" description="Technical criteria name"/>
+		<column name="VALUE" type="num" nullable="false" precision="126" default="0" description="Grade"/>
+		<index name="DELTA_TCRIT_PK" type="index">
+			<column name="ID,TYPE"/>
+		</index>
+		<index name="DELTA_TCRIT_IDX" type="index">
+			<column name="BCRIT_ID"/>
+		</index>
+	</table>
+	<table name="DELTA_WK_QR" description="Grade for quality rule for each execution">
+		<column name="QR_ID" type="int" nullable="false" description="Business criteria"/>
+		<column name="VALUE" type="num" nullable="false" precision="126" default="0" description="Grade"/>
+		<column name="DETAIL" type="int" nullable="false" default="0" description="Number of violations"/>
+		<column name="TOTAL" type="int" nullable="false" default="0" description="Total"/>
+		<index name="DELTA_WK_QR_PK" type="primary key">
+			<column name="QR_ID"/>
+		</index>
+	</table>
+	<table name="DELTA_QR" description="Grade for quality rule for each execution">
+		<column name="ID" type="int" nullable="false" description="Execution id"/>
+		<column name="TYPE" type="string" nullable="false" length="1" description="Delta type"/>
+		<column name="QR_ID" type="int" nullable="false" description="Business criteria"/>
+		<column name="QR_NAME" type="string" nullable="false" length="255" description="Technical criteria name"/>
+		<column name="VALUE" type="num" nullable="false" precision="126" default="0" description="Grade"/>
+		<column name="DETAIL" type="int" nullable="false" default="0" description="Number of violations"/>
+		<column name="TOTAL" type="int" nullable="false" default="0" description="Total"/>
+		<index name="DELTA_QR_PK" type="index">
+			<column name="ID,TYPE"/>
+		</index>
+		<index name="DELTA_QR_IDX" type="index">
+			<column name="QR_ID"/>
+		</index>
+	</table>
+	
+	<scope name="DELTA_SNAPSHOT">
+		<scopetable name="DELTA_REPORT"/>
+		<scopetable name="DELTA_BCRIT"/>
+		<scopetable name="DELTA_WK_BCRIT"/>
+		<scopetable name="DELTA_TCRIT"/>
+		<scopetable name="DELTA_WK_TCRIT"/>
+		<scopetable name="DELTA_QR"/>
+		<scopetable name="DELTA_WK_QR"/>
+	</scope>
+</config>

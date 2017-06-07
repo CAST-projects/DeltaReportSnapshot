@@ -72,6 +72,41 @@
 		</index>
 	</table>
 	
+	<table name="DELTA_QR_COMPONENT" description="List of rules per component. Allow to identify in the report new rules introduced and which component is responsible for a variation (fix AIP or an extension)">
+		<column name="QR_ID" type="int" nullable="false" description="ID of the quality rule"/>
+		<column name="QR_COMPONENT" type="string" nullable="false" length="255" description="Name of the component"/>
+		<column name="QR_NAME" type="string" nullable="false" length="255" description="Name of the quality rule"/>
+		<column name="QR_VERSION" type="string" nullable="false" length="100" description="x.y.z"/>
+		<index name="DELTA_QR_COMPONENT_IDX" type="index">
+			<column name="QR_ID"/>
+		</index>
+	</table>
+	<table name="DELTA_QR_EXPLANATIONS" description="Explanations for changes in the quality rule's computation">
+		<column name="QR_ID" type="int" nullable="false" description="ID of the quality rule"/>
+		<column name="QR_DELTA_TYPE" type="int" nullable="false" description="Value: 2 for total, 1 for violations, 0 for computation"/>
+		<column name="QR_DELTA_FUNCTIONAL" type="int" nullable="false" description="Value: 0 for functional and 1 for technical"/>
+		<column name="QR_NAME" type="string" nullable="false" length="255" description="Name of the quality rule"/>
+		<column name="QR_VERSION" type="string" nullable="false" length="100" description="x.y.z"/>
+		<column name="QR_SQL" type="string" nullable="true" length="100" description="SQL function impacted"/>
+		<column name="QR_DELTA_LINK" type="string" nullable="true" length="1000" description="Link to the documentation"/>
+		<column name="QR_DELTA_EXPLANATION" type="string" nullable="true" length="3000" description="Explanation's summary"/>
+		<index name="DELTA_QR_EXPLANATIONS_IDX" type="index">
+			<column name="QR_ID,QR_DELTA_TYPE,QR_DELTA_FUNCTIONAL"/>
+		</index>
+	</table>
+	<table name="DELTA_SCOPE_EXPLANATIONS" description="Explanations for changes in the scope's computation which can impact multiple quality rules">
+		<column name="SCOPE_ID" type="int" nullable="false" description="ID of the scope"/>
+		<column name="SCOPE_DELTA_FUNCTIONAL" type="int" nullable="false" description="Value: 0 for functional and 1 for technical"/>
+		<column name="SCOPE_NAME" type="string" nullable="false" length="255" description="Name of the scope"/>
+		<column name="SCOPE_VERSION" type="string" nullable="false" length="100" description="x.y.z"/>
+		<column name="SCOPE_SQL" type="string" nullable="true" length="100" description="SQL function impacted"/>
+		<column name="SCOPE_DELTA_LINK" type="string" nullable="true" length="1000" description="Link to the documentation"/>
+		<column name="SCOPE_DELTA_EXPLANATION" type="string" nullable="true" length="3000" description="Explanation's summary"/>
+		<index name="DELTA_SCOPE_EXPLANATIONS_IDX" type="index">
+			<column name="SCOPE_ID,SCOPE_DELTA_FUNCTIONAL"/>
+		</index>
+	</table>
+
 	<scope name="DELTA_SNAPSHOT">
 		<scopetable name="DELTA_REPORT"/>
 		<scopetable name="DELTA_BCRIT"/>
@@ -80,5 +115,10 @@
 		<scopetable name="DELTA_WK_TCRIT"/>
 		<scopetable name="DELTA_QR"/>
 		<scopetable name="DELTA_WK_QR"/>
+	</scope>
+	<scope name="DELTA_SNAPSHOT_QR">
+		<scopetable name="DELTA_QR_COMPONENT"/>
+		<scopetable name="DELTA_QR_EXPLANATIONS"/>
+    <scopetable name="DELTA_SCOPE_EXPLANATIONS"/>
 	</scope>
 </config>

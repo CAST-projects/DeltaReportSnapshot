@@ -44,7 +44,7 @@
 			<column name="ID,TYPE"/>
 		</index>
 		<index name="DELTA_TCRIT_IDX" type="index">
-			<column name="BCRIT_ID"/>
+			<column name="TCRIT_ID"/>
 		</index>
 	</table>
 	<table name="DELTA_WK_QR" description="Grade for quality rule for each execution">

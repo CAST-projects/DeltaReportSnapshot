@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
-<Package DatabaseKind="KB_CENTRAL" Description="Delta Snapshot" Display="Delta Snapshot" PackName="DELTA_SNAPSHOT" SupportedServer="ALL" Type="SPECIFIC" Version="1.0.0.1000">
+<Package DatabaseKind="KB_CENTRAL" Description="Delta Snapshot" Display="Delta Snapshot" PackName="DELTA_SNAPSHOT" SupportedServer="ALL" Type="SPECIFIC" Version="1.0.1">
 	<Include>
 	</Include>
 	<Exclude>
@@ -11,8 +11,13 @@
 		<Step File="table_delta_snapshot.xml" Option="512" Scope="DELTA_SNAPSHOT_QR" Type="XML_MODEL"/>
 	</Install>
 	<Update>
+		<Step File="table_delta_snapshot.xml" Option="512" Scope="DELTA_SNAPSHOT_QR" Type="XML_MODEL" ToVersion="1.0.1"/>
 	</Update>
 	<Refresh>
+    <!-- Index -->
+		<Step File="table_delta_snapshot.xml" Option="256" Scope="DELTA_SNAPSHOT" Type="XML_MODEL"/>
+    <!-- Index -->
+		<Step File="table_delta_snapshot.xml" Option="256" Scope="DELTA_SNAPSHOT_QR" Type="XML_MODEL"/>
 		<Step File="DeltaSnapshot.sql" Type="PROC"/>
 	</Refresh>
 	<Remove>

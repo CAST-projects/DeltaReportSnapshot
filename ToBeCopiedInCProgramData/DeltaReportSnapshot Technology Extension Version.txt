@@ -1,0 +1,1 @@
+This is the Delta Report for Snapshots, version VERSION, build BUILDNO

@@ -96,6 +96,19 @@ Begin
     --JOIN DSS_METRIC_TYPE_TREES DMTT ON (CQT.METRIC_ID = DMTT.METRIC_ID)
     ;
 
+  truncate table DELTA_WK_SM;
+  
+  insert into DELTA_WK_SM (SM_ID,VALUE)
+  select measure_id,meas_value
+  from csv_quantity_val q
+    --join dss_metric_types mt on (mt.metric_id = q.measure_id and mt.metric_type = 3 and mt.metric_group = 0)
+  where SNAPSHOT_ID = p_snapshot_id
+  and CONTEXT_ID = p_app_id;
+
+  insert into DELTA_SM (ID,TYPE,SM_ID,SM_NAME,VALUE)
+  select p_id,p_delta_type,o.SM_ID,t.METRIC_NAME,o.VALUE
+  from DELTA_WK_SM o
+    join DSS_METRIC_TYPES t on (t.metric_id = o.SM_ID);
   return;
 End;
 $body$ 
@@ -232,6 +245,45 @@ Begin
   and b.TYPE = 'B'
   and not exists (select 1 from DELTA_QR a where a.ID = b.ID and a.TYPE = 'A' and a.QR_ID = b.QR_ID);
 
+  
+  delete from DELTA_SM where ID = p_id and TYPE in ('X','N','D');
+
+  insert into DELTA_SM (ID,TYPE,SM_ID,SM_NAME,VALUE)
+  select a.ID,'X',a.SM_ID,a.SM_NAME,(a.VALUE - b.VALUE)
+  from DELTA_SM a
+    join DELTA_SM b on (b.ID = a.ID and b.TYPE = 'B' and b.SM_ID = a.SM_ID)
+  where a.ID = p_id
+  and a.TYPE = 'A'
+  and a.VALUE <> b.VALUE;
+
+  insert into DELTA_SM (ID,TYPE,SM_ID,SM_NAME,VALUE)
+  select a.ID,'x',a.SM_ID,a.SM_NAME,(a.VALUE - b.VALUE)
+  from DELTA_SM a
+    join DELTA_SM b on (b.ID = a.ID and b.TYPE = 'M' and b.SM_ID = a.SM_ID)
+  where a.ID = p_id
+  and a.TYPE = 'A'
+  and a.VALUE <> b.VALUE;
+  
+  insert into DELTA_SM (ID,TYPE,SM_ID,SM_NAME,VALUE)
+  select a.ID,'N',a.SM_ID,a.SM_NAME,a.VALUE
+  from DELTA_SM a
+  where a.ID = p_id
+  and a.TYPE = 'A'
+  and not exists (select 1 from DELTA_SM b where b.ID = a.ID and b.TYPE = 'B' and b.SM_ID = a.SM_ID);
+
+  insert into DELTA_SM (ID,TYPE,SM_ID,SM_NAME,VALUE)
+  select a.ID,'n',a.SM_ID,a.SM_NAME,a.VALUE
+  from DELTA_SM a
+  where a.ID = p_id
+  and a.TYPE = 'M'
+  and not exists (select 1 from DELTA_SM b where b.ID = a.ID and b.TYPE = 'B' and b.SM_ID = a.SM_ID);
+
+  insert into DELTA_SM (ID,TYPE,SM_ID,SM_NAME,VALUE)
+  select b.ID,'D',b.SM_ID,b.SM_NAME,b.VALUE * -1
+  from DELTA_SM b
+  where b.ID = p_id
+  and b.TYPE = 'B'
+  and not exists (select 1 from DELTA_SM a where a.ID = b.ID and a.TYPE = 'A' and a.SM_ID = b.SM_ID);
   return;
 End;
 $body$ 

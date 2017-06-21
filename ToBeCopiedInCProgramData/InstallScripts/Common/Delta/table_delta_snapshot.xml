@@ -107,6 +107,27 @@
 		</index>
 	</table>
 
+	<table name="DELTA_WK_SM" description="Sizing measure for each execution">
+		<column name="SM_ID" type="int" nullable="false" description="Business criteria"/>
+		<column name="VALUE" type="num" nullable="false" precision="126" default="0" description="Measure"/>
+		<index name="DELTA_WK_SM_PK" type="primary key">
+			<column name="SM_ID"/>
+		</index>
+	</table>
+	<table name="DELTA_SM" description="Sizing measure for each execution">
+		<column name="ID" type="int" nullable="false" description="Execution id"/>
+		<column name="TYPE" type="string" nullable="false" length="1" description="Delta type"/>
+		<column name="SM_ID" type="int" nullable="false" description="Business criteria"/>
+		<column name="SM_NAME" type="string" nullable="false" length="255" description="Sizing measure name"/>
+		<column name="VALUE" type="num" nullable="false" precision="126" default="0" description="Measure"/>
+		<index name="DELTA_SM_IDX1" type="index">
+			<column name="ID,TYPE"/>
+		</index>
+		<index name="DELTA_SM_IDX2" type="index">
+			<column name="SM_ID"/>
+		</index>
+	</table>
+
 	<scope name="DELTA_SNAPSHOT">
 		<scopetable name="DELTA_REPORT"/>
 		<scopetable name="DELTA_BCRIT"/>
@@ -115,6 +136,12 @@
 		<scopetable name="DELTA_WK_TCRIT"/>
 		<scopetable name="DELTA_QR"/>
 		<scopetable name="DELTA_WK_QR"/>
+		<scopetable name="DELTA_SM"/>
+		<scopetable name="DELTA_WK_SM"/>
+	</scope>
+	<scope name="DELTA_SNAPSHOT_1.1.0">
+		<scopetable name="DELTA_SM"/>
+		<scopetable name="DELTA_WK_SM"/>
 	</scope>
 	<scope name="DELTA_SNAPSHOT_QR">
 		<scopetable name="DELTA_QR_COMPONENT"/>

@@ -1,5 +1,7 @@
+DROP FUNCTION IF EXISTS delta_snapshot_report(character varying);
+
 create or replace FUNCTION delta_snapshot_report (p_app_name character varying)
-RETURNS void as
+RETURNS integer as
 $body$
 declare
 L_ID integer := 0;
@@ -32,7 +34,9 @@ Begin
     insert into DELTA_REPORT (ID,TAG)
     select L_ID
       , (select 'Check snapshots: application "' || p_app_name || '" does not exist. Failed at ' || current_timestamp(0) from sys_package_version pv where package_name = 'ADG_CENTRAL');
+    return L_ID * -1;
   end if;
+  return L_ID;
 End;
 $body$ 
 LANGUAGE plpgsql;

@@ -1,6 +1,19 @@
+-- remove the function without retrun code to be able to create the new one
 DROP FUNCTION IF EXISTS delta_snapshot_report(character varying);
 
 create or replace FUNCTION delta_snapshot_report (p_app_name character varying)
+RETURNS integer as
+$body$
+declare
+L_ID integer := 0;
+Begin
+  select delta_snapshot_report(p_app_name, 0) into L_ID;
+  return L_ID;
+End;
+$body$ 
+LANGUAGE plpgsql;
+
+create or replace FUNCTION delta_snapshot_report (p_app_name character varying, p_snapshot_id integer)
 RETURNS integer as
 $body$
 declare
@@ -18,8 +31,12 @@ Begin
   if  L_APP_ID > 0 then
     select COALESCE(max(snapshot_id),0) into L_SNAPSHOT_ID2 from dss_snapshots where application_id=L_APP_ID;
     if  L_SNAPSHOT_ID2 > 0 then
-      select COALESCE(max(snapshot_id),0) into L_SNAPSHOT_ID1 from dss_snapshots where application_id=L_APP_ID and snapshot_id < L_SNAPSHOT_ID2;
-      if  L_SNAPSHOT_ID1 > 0 then
+      if (p_snapshot_id > 0) then
+        L_SNAPSHOT_ID1 := p_snapshot_id;
+      else
+        select COALESCE(max(snapshot_id),0) into L_SNAPSHOT_ID1 from dss_snapshots where application_id=L_APP_ID and snapshot_id < L_SNAPSHOT_ID2;
+      end if;
+      if L_SNAPSHOT_ID1 > 0 then
   
         insert into DELTA_REPORT (ID,TAG)
         select L_ID

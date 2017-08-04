@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="DELTA_SNAPSHOT" version="1.0.0">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="DELTA_SNAPSHOT" version="1.2.0">
 	<table name="DELTA_REPORT" description="Delta report history">
 		<column name="ID" type="int" nullable="false" description="Execution id"/>
 		<column name="TAG" type="string" nullable="false" length="100" description="Execution tag"/>
@@ -128,8 +128,18 @@
 		</index>
 	</table>
 
+	<table name="DELTA_REPORT_VERSIONS" description="List versions of components to be considered in the comparison">
+		<column name="ID" type="int" nullable="false" description="Execution id"/>
+		<column name="COMPONENT_ID" type="string" nullable="false" length="255" description="ID of the component"/>
+		<column name="COMPONENT_VERSION" type="string" nullable="false" length="100" description="Version x.y.z of the component"/>
+		<index name="DELTA_REPORT_VERSIONS_IDX" type="index">
+			<column name="ID"/>
+		</index>
+	</table>
+
 	<scope name="DELTA_SNAPSHOT">
 		<scopetable name="DELTA_REPORT"/>
+		<scopetable name="DELTA_REPORT_VERSIONS"/>
 		<scopetable name="DELTA_BCRIT"/>
 		<scopetable name="DELTA_WK_BCRIT"/>
 		<scopetable name="DELTA_TCRIT"/>
@@ -142,6 +152,9 @@
 	<scope name="DELTA_SNAPSHOT_1.1.0">
 		<scopetable name="DELTA_SM"/>
 		<scopetable name="DELTA_WK_SM"/>
+	</scope>
+	<scope name="DELTA_SNAPSHOT_1.2.0">
+		<scopetable name="DELTA_REPORT_VERSIONS"/>
 	</scope>
 	<scope name="DELTA_SNAPSHOT_QR">
 		<scopetable name="DELTA_QR_COMPONENT"/>

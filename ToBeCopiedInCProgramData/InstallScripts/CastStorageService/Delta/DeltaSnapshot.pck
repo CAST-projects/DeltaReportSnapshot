@@ -13,6 +13,7 @@
 	<Update>
 		<Step File="table_delta_snapshot.xml" Option="512" Scope="DELTA_SNAPSHOT_QR" Type="XML_MODEL" ToVersion="1.0.1"/>
 		<Step File="table_delta_snapshot.xml" Option="512" Scope="DELTA_SNAPSHOT_1.1.0" Type="XML_MODEL" ToVersion="1.1.0"/>
+		<Step File="table_delta_snapshot.xml" Option="512" Scope="DELTA_SNAPSHOT_1.2.0" Type="XML_MODEL" ToVersion="1.2.0"/>
 	</Update>
 	<Refresh>
     <!-- Index -->

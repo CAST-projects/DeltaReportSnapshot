@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
   <metadata>
     <id>com.castsoftware.labs.deltareportsnapshot</id>
-    <version>_VERSION_-build_BUILDNO_</version>
+    <version>1.2.0-build_BUILDNO_</version>
     <title>Delta Report on Snapshots</title>
     <authors>CAST Labs</authors>
     <owners>CAST</owners>
@@ -17,10 +17,4 @@
         <dependency id="CAIP" version="8.2.0"/>   
     </dependencies> 
   </metadata>
-	<files>
-		<file src="InstallScripts\**" target="InstallScripts" />    
-		<file src="DeltaReportSnapshot Technology Extension Version.txt" target="DeltaReportSnapshot Technology Extension Version.txt" />    
-		<file src="readme.html" target="readme.html" />    
-		<file src="Upgrade_Delta_Report.xlsm" target="Upgrade_Delta_Report.xlsm" />    
-	</files>
 </package>
